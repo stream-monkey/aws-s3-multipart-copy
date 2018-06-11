@@ -30,8 +30,8 @@ let init = function (aws_s3_object, initialized_logger) {
  * (note that copy_part_size_bytes, copied_object_permissions, expiration_period are optional and will be assigned with default values if not given)
  * @param {*} request_context optional parameter for logging purposes
  */
-let copyObjectMultipart = async function ({ source_bucket, object_key, destination_bucket, copied_object_name, object_size, copy_part_size_bytes, copied_object_permissions, expiration_period }, request_context) {
-    let upload_id = await initiateMultipartCopy(destination_bucket, copied_object_name, copied_object_permissions, expiration_period, request_context);
+let copyObjectMultipart = async function ({ source_bucket, object_key, destination_bucket, copied_object_name, object_size, copy_part_size_bytes, copied_object_permissions, copied_object_metadata, expiration_period }, request_context) {
+    let upload_id = await initiateMultipartCopy(destination_bucket, copied_object_name, copied_object_permissions, copied_object_metadata, expiration_period, request_context);
     let partitionsRangeArray = calculatePartitionsRangeArray(object_size, copy_part_size_bytes);
     let copyPartFunctionsArray = [];
 
@@ -51,13 +51,14 @@ let copyObjectMultipart = async function ({ source_bucket, object_key, destinati
         });
 };
 
-function initiateMultipartCopy(destination_bucket, copied_object_name, copied_object_permissions, expiration_period, request_context) {
+function initiateMultipartCopy(destination_bucket, copied_object_name, copied_object_permissions, copied_object_metadata, expiration_period, request_context) {
     let params = {
         Bucket: destination_bucket,
         Key: copied_object_name,
         ACL: copied_object_permissions || DEFAULT_COPIED_OBJECT_PERMISSIONS
     };
     expiration_period ? params.Expires = expiration_period : null;
+    copied_object_metadata ? params.Metadata = copied_object_metadata : null;
 
     return s3.createMultipartUpload(params).promise()
         .then((result) => {
