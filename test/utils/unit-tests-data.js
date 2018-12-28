@@ -18,9 +18,11 @@ module.exports = {
         object_size: 70000000,
         copy_part_size_bytes: 50000000,
         copied_object_permissions: 'copied_object_permissions',
-        expiration_period: 100000
+        expiration_period: 100000,
+        server_side_encryption: 'AES256',
+        content_type: 'application/json'
     },
-    partial_request_options: { // no copy_part_size_bytes, no copied_object_permissions, no expiration_period
+    partial_request_options: { // no copy_part_size_bytes, no copied_object_permissions, no expiration_period,  no server_side_encryption, no content_type
         source_bucket: 'source_bucket',
         object_key: 'object_key',
         destination_bucket: 'destination_bucket',
@@ -31,11 +33,13 @@ module.exports = {
         Bucket: 'destination_bucket',
         Key: 'copied_object_name',
         ACL: 'copied_object_permissions',
-        Expires: 100000
+        Expires: 100000,
+        ServerSideEncryption: 'AES256',
+        ContentType: 'application/json'
     },
     expected_uploadPartCopy_firstCallArgs: {
         Bucket: 'destination_bucket',
-        CopySource: 'source_bucket/object_key',
+        CopySource: 'source_bucket%2Fobject_key',
         CopySourceRange: 'bytes=0-49999999',
         Key: 'copied_object_name',
         PartNumber: 1,
@@ -43,7 +47,7 @@ module.exports = {
     },
     expected_uploadPartCopy_secondCallArgs: {
         Bucket: 'destination_bucket',
-        CopySource: 'source_bucket/object_key',
+        CopySource: 'source_bucket%2Fobject_key',
         CopySourceRange: 'bytes=50000000-69999999',
         Key: 'copied_object_name',
         PartNumber: 2,
