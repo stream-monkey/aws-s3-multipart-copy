@@ -51,14 +51,15 @@ const copyObjectMultipart = async function ({ source_bucket, object_key, destina
         });
 };
 
-function initiateMultipartCopy(destination_bucket, copied_object_name, copied_object_permissions, expiration_period, request_context, server_side_encryption, content_type) {
+function initiateMultipartCopy(destination_bucket, copied_object_name, copied_object_permissions, copied_object_metadata, copied_object_contenttype, expiration_period, request_context, server_side_encryption, content_type) {
     const params = {
         Bucket: destination_bucket,
         Key: copied_object_name,
         ACL: copied_object_permissions || DEFAULT_COPIED_OBJECT_PERMISSIONS
     };
     expiration_period ? params.Expires = expiration_period : null;
-    content_type ? params.ContentType = content_type : null;
+    copied_object_metadata ? params.Metadata = copied_object_metadata : null;
+    copied_object_contenttype ? params.ContentType = copied_object_contenttype : null;
     server_side_encryption ? params.ServerSideEncryption = server_side_encryption : null;
 
     return s3.createMultipartUpload(params).promise()
