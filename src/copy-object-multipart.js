@@ -31,7 +31,7 @@ const init = function (aws_s3_object, initialized_logger) {
  * @param {*} request_context optional parameter for logging purposes
  */
 const copyObjectMultipart = async function ({ source_bucket, object_key, destination_bucket, copied_object_name, object_size, copy_part_size_bytes, copied_object_permissions, expiration_period, server_side_encryption, content_type }, request_context) {
-    const upload_id = await initiateMultipartCopy(destination_bucket, copied_object_name, copied_object_permissions, expiration_period, request_context, server_side_encryption, content_type);
+    const upload_id = await initiateMultipartCopy(destination_bucket, copied_object_name, copied_object_permissions, copied_object_metadata, copied_object_contenttype, expiration_period, request_context, server_side_encryption, content_type);
     const partitionsRangeArray = calculatePartitionsRangeArray(object_size, copy_part_size_bytes);
     const copyPartFunctionsArray = [];
 
